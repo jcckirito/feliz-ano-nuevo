@@ -201,6 +201,10 @@
       transition: transform .12s ease, background .12s ease;
     }
     button:active{ transform: scale(.98); }
+    button.primary{
+      background: linear-gradient(90deg, rgba(34,211,238,.22), rgba(236,72,153,.20), rgba(124,58,237,.22));
+      border-color: rgba(34,211,238,.35);
+    }
 
     .footer{
       padding: 0 16px 16px;
@@ -224,6 +228,7 @@
     canvas#fx{ z-index: 4; }
     canvas#rain{ z-index: 6; opacity:0; transition: opacity .8s ease; }
 
+    /* Dragón orbitando */
     .dragonWrap{
       position:absolute;
       inset:0;
@@ -241,7 +246,6 @@
       filter: drop-shadow(0 0 22px rgba(34,211,238,.18));
     }
     @keyframes orbit { from { transform: rotate(0deg);} to{ transform: rotate(360deg);} }
-
     .dragon{
       position:absolute;
       top: 50%;
@@ -259,6 +263,7 @@
     .dragon .detail{ fill: rgba(255,255,255,.55); }
     .dragon .eye{ fill: rgba(34,211,238,.95); }
 
+    /* Cascabeles */
     .bells{
       position:absolute;
       top: 14px;
@@ -284,6 +289,7 @@
       50%{ transform: rotate(12deg); }
     }
 
+    /* Pasto */
     .ground{
       position:absolute; left:0; right:0; bottom:0;
       height: 34vh;
@@ -326,6 +332,7 @@
       50%{ transform: rotate(4deg); }
     }
 
+    /* Animalitos */
     .animals{
       position:absolute; inset:0;
       z-index: 9;
@@ -364,6 +371,7 @@
       text-align:center;
     }
 
+    /* Modo medianoche -> día */
     body.midnight .bgNight{ opacity:0; }
     body.midnight .aurora{ opacity:0.08; }
     body.midnight .bgDay{ opacity:1; }
@@ -411,6 +419,7 @@
       <canvas id="fx"></canvas>
       <canvas id="rain"></canvas>
 
+      <!-- Dragón bonito -->
       <div class="dragonWrap" aria-hidden="true">
         <div class="dragonOrbit">
           <svg class="dragon" viewBox="0 0 256 256" aria-hidden="true">
@@ -423,6 +432,7 @@
         </div>
       </div>
 
+      <!-- Cascabeles -->
       <div class="bells" aria-hidden="true">
         <svg class="bell" viewBox="0 0 64 64">
           <path fill="#f2c94c" d="M32 6c-7 0-12 6-12 13v7c0 5-2 8-5 11-2 2-3 4-3 6h40c0-2-1-4-3-6-3-3-5-6-5-11v-7C44 12 39 6 32 6z"/>
@@ -457,6 +467,7 @@
         </div>
 
         <div class="actions">
+          <button class="primary" id="btnRain">Dar click para llover 🌧️</button>
           <button id="btnFullscreen">Pantalla completa ⛶</button>
         </div>
       </div>
@@ -482,6 +493,7 @@
   </div>
 
   <script>
+    // ===== PERSONALIZA AQUÍ =====
     const PARA = "";
     const MENSAJE_ANO_NUEVO =
       "Que este nuevo año te traiga mucha salud, trabajo, dinero, paz y prosperidad. " +
@@ -536,6 +548,9 @@
       bellDing(t0 + 0.28, 784);
       bellDing(t0 + 0.42, 1046);
     }
+
+    // 1 toque en cualquier parte habilita audio
+    window.addEventListener("pointerdown", () => { ensureAudio(); }, { once:true });
 
     // ===== HORA PERÚ =====
     function nowInTZ() {
@@ -592,7 +607,7 @@
       return ctx;
     }
 
-    // ===== FIUUU =====
+    // ===== “FIUUU” =====
     const streakCanvas = document.getElementById("streaks");
     let sctx = null;
     let streaks = [];
@@ -785,20 +800,26 @@
       $("s").textContent = pad2(secs);
     }
 
-    // ===== BOTÓN ÚNICO =====
+    // ===== BOTONES =====
+    document.getElementById("btnRain").addEventListener("click", () => {
+      ensureAudio();
+      startRain(6);
+    });
+
     document.getElementById("btnFullscreen").addEventListener("click", async () => {
-      ensureAudio(); // habilita audio con gesto
+      ensureAudio();
       try{
         if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
         else await document.exitFullscreen();
       }catch(e){}
     });
 
-    // 1 toque en cualquier parte habilita audio
-    window.addEventListener("pointerdown", () => { ensureAudio(); }, { once:true });
-
     // ===== INIT =====
     function init(){
+      const streakCanvas = document.getElementById("streaks");
+      const fxCanvas = document.getElementById("fx");
+      const rainCanvas = document.getElementById("rain");
+
       sctx = fitCanvas(streakCanvas);
       fctx = fitCanvas(fxCanvas);
       rctx = fitCanvas(rainCanvas);
@@ -817,6 +838,7 @@
       drawConfetti();
       drawRain();
     }
+
     init();
   </script>
 </body>
