@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>¡Feliz Año Nuevo!</title>
+  <style>
+    :root{
+      --bg1:#06070f;
+      --bg2:#0b1024;
+      --card:rgba(255,255,255,.08);
+      --stroke:rgba(255,255,255,.14);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.72);
+      --glow: rgba(124,58,237,.35);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      color:var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(900px 500px at 15% 15%, rgba(34,211,238,.18), transparent 60%),
+        radial-gradient(800px 500px at 85% 30%, rgba(124,58,237,.22), transparent 65%),
+        radial-gradient(700px 500px at 50% 90%, rgba(236,72,153,.16), transparent 65%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow:hidden;
+    }
+
+    /* estrellas */
+    .stars, .stars:before, .stars:after{
+      position:absolute; inset:-200px;
+      content:"";
+      background-image: radial-gradient(#fff 1px, transparent 1px);
+      background-size: 120px 120px;
+      opacity:.22;
+      animation: drift 35s linear infinite;
+      pointer-events:none;
+    }
+    .stars:before{ background-size: 170px 170px; opacity:.16; animation-duration: 55s; }
+    .stars:after { background-size: 90px 90px;  opacity:.12; animation-duration: 75s; }
+    @keyframes drift { from{ transform: translateY(0);} to{ transform: translateY(200px);} }
+
+    .wrap{
+      position:relative;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding: 24px;
+    }
+    .card{
+      width:min(980px, 100%);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      border: 1px solid var(--stroke);
+      border-radius: 28px;
+      box-shadow: 0 30px 80px rgba(0,0,0,.45);
+      overflow:hidden;
+      position:relative;
+    }
+    .card:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background: radial-gradient(600px 300px at 30% 0%, rgba(34,211,238,.25), transparent 60%),
+                  radial-gradient(600px 300px at 70% 10%, rgba(236,72,153,.22), transparent 55%),
+                  radial-gradient(700px 350px at 50% 100%, rgba(124,58,237,.22), transparent 60%);
+      filter: blur(18px);
+      opacity:.9;
+      pointer-events:none;
+    }
+    .content{
+      position:relative;
+      padding: 34px 28px 26px;
+      text-align:center;
+    }
+
+    .badge{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.22);
+      color: var(--muted);
+      font-size: 14px;
+      backdrop-filter: blur(8px);
+    }
+    .badge .dot{
+      width:10px; height:10px; border-radius:999px;
+      background: rgba(34,211,238,.9);
+      box-shadow: 0 0 18px rgba(34,211,238,.55);
+    }
+
+    h1{
+      margin: 18px 0 10px;
+      font-size: clamp(36px, 5vw, 64px);
+      line-height: 1.05;
+      letter-spacing: .2px;
+      text-shadow: 0 0 28px var(--glow);
+    }
+    .year{
+      font-weight: 800;
+      display:inline-block;
+      padding: 4px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.18);
+    }
+    p{
+      margin: 0 auto 20px;
+      max-width: 70ch;
+      color: var(--muted);
+      font-size: clamp(16px, 2vw, 18px);
+    }
+
+    .timer{
+      display:flex;
+      justify-content:center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 18px 0 16px;
+    }
+    .tbox{
+      width: 120px;
+      padding: 14px 12px;
+      border-radius: 18px;
+      background: rgba(0,0,0,.20);
+      border: 1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    .num{
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: .5px;
+    }
+    .lbl{
+      margin-top: 2px;
+      font-size: 12px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.68);
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+    button{
+      cursor:pointer;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 14px;
+      backdrop-filter: blur(10px);
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+    }
+    button:hover{ transform: translateY(-1px); background: rgba(255,255,255,.11); border-color: rgba(255,255,255,.22); }
+    button.primary{
+      border-color: rgba(34,211,238,.35);
+      background: linear-gradient(90deg, rgba(34,211,238,.22), rgba(124,58,237,.22));
+    }
+
+    /* confetti */
+    #fx{ position:absolute; inset:0; pointer-events:none; }
+    .footer{
+      position:relative;
+      padding: 0 22px 18px;
+      text-align:center;
+      color: rgba(255,255,255,.62);
+      font-size: 13px;
+    }
+    .footer b{ color: rgba(255,255,255,.86); }
+  </style>
+</head>
+
+<body>
+  <div class="stars"></div>
+
+  <div class="wrap">
+    <div class="card" role="region" aria-label="Tarjeta de Año Nuevo">
+      <canvas id="fx"></canvas>
+
+      <div class="content">
+        <div class="badge">
+          <span class="dot"></span>
+          <span id="status">Preparando la sorpresa para medianoche…</span>
+        </div>
+
+        <h1>
+          ¡Feliz Año Nuevo <span class="year" id="yearTxt"></span>!
+        </h1>
+
+        <p id="msg">
+          Que este nuevo año te traiga salud, trabajo, amor y mucha paz.
+          Gracias por estar presente. 💫
+        </p>
+
+        <div class="timer" aria-label="Contador">
+          <div class="tbox"><div class="num" id="d">00</div><div class="lbl">Días</div></div>
+          <div class="tbox"><div class="num" id="h">00</div><div class="lbl">Horas</div></div>
+          <div class="tbox"><div class="num" id="m">00</div><div class="lbl">Min</div></div>
+          <div class="tbox"><div class="num" id="s">00</div><div class="lbl">Seg</div></div>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="btnTest">Probar fuegos 🎆</button>
+          <button id="btnFullscreen">Pantalla completa ⛶</button>
+        </div>
+      </div>
+
+      <div class="footer">
+        Hecho con 💙 para esta medianoche — <b id="tz"></b>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // === CONFIG ===
+    // Puedes personalizar el nombre aquí:
+    const PARA = ""; // ejemplo: "Para: Hugo"
+    const EXTRA_MSG = ""; // ejemplo: "Que tus metas se cumplan. ✨"
+
+    // Zona horaria del usuario (Perú / Lima)
+    const timeZone = "America/Lima";
+
+    const $ = (id) => document.getElementById(id);
+    const pad2 = (n) => String(n).padStart(2, "0");
+
+    function formatTZ() {
+      // Muestra la zona horaria amigable
+      $("tz").textContent = "Zona horaria: " + timeZone;
+    }
+
+    // Obtiene "ahora" en la zona horaria indicada usando un truco con Intl
+    function nowInTZ() {
+      const parts = new Intl.DateTimeFormat("en-US", {
+        timeZone,
+        year:"numeric", month:"2-digit", day:"2-digit",
+        hour:"2-digit", minute:"2-digit", second:"2-digit", hour12:false
+      }).formatToParts(new Date());
+
+      const get = (type) => parts.find(p => p.type === type).value;
+      const y = Number(get("year"));
+      const mo = Number(get("month"));
+      const da = Number(get("day"));
+      const hh = Number(get("hour"));
+      const mm = Number(get("minute"));
+      const ss = Number(get("second"));
+
+      // Date() local, pero con valores "como si" fueran en la TZ.
+      // Para diferencias (countdown) nos sirve bien, porque usamos el mismo método para el target.
+      return new Date(y, mo-1, da, hh, mm, ss);
+    }
+
+    function nextMidnight() {
+      const n = nowInTZ();
+      const target = new Date(n);
+      target.setDate(target.getDate() + 1);
+      target.setHours(0,0,0,0);
+      return target;
+    }
+
+    // === Confetti simple (canvas) ===
+    const canvas = $("fx");
+    const ctx = canvas.getContext("2d");
+    let W=0, H=0, confetti=[], anim=null;
+
+    function resize() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      W = canvas.width = Math.floor(rect.width);
+      H = canvas.height = Math.floor(rect.height);
+    }
+    window.addEventListener("resize", resize);
+
+    function spawnConfetti(count=180) {
+      confetti = Array.from({length: count}, () => ({
+        x: Math.random()*W,
+        y: -20 - Math.random()*H,
+        r: 4 + Math.random()*6,
+        vy: 2 + Math.random()*4.5,
+        vx: -1.2 + Math.random()*2.4,
+        a: Math.random()*Math.PI*2,
+        va: -0.12 + Math.random()*0.24,
+        life: 220 + Math.random()*180
+      }));
+    }
+
+    function draw() {
+      ctx.clearRect(0,0,W,H);
+      for (const p of confetti) {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.a += p.va;
+        p.life -= 1;
+
+        // colores sin hardcodear demasiado: variación con HSL
+        const hue = (p.x/W)*360;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.a);
+        ctx.fillStyle = `hsla(${hue}, 90%, 70%, 0.9)`;
+        ctx.fillRect(-p.r, -p.r/2, p.r*2, p.r);
+        ctx.restore();
+      }
+      confetti = confetti.filter(p => p.life > 0 && p.y < H + 40);
+      if (confetti.length > 0) anim = requestAnimationFrame(draw);
+    }
+
+    function fireworks() {
+      cancelAnimationFrame(anim);
+      resize();
+      spawnConfetti(220);
+      draw();
+    }
+
+    // === UI ===
+    function setPersonal() {
+      const y = nowInTZ().getFullYear() + 1; // porque celebraremos el año que entra
+      $("yearTxt").textContent = y;
+
+      if (PARA) $("msg").innerHTML = `<b>${PARA}</b><br>${$("msg").innerHTML}`;
+      if (EXTRA_MSG) $("msg").innerHTML += `<br><br>${EXTRA_MSG}`;
+    }
+
+    function tick() {
+      const n = nowInTZ();
+      const t = nextMidnight();
+
+      const diff = t - n; // ms
+      if (diff <= 0) {
+        $("status").textContent = "¡Ya es medianoche! 🎉";
+        $("d").textContent = "00";
+        $("h").textContent = "00";
+        $("m").textContent = "00";
+        $("s").textContent = "00";
+        fireworks();
+        return; // se queda en celebración
+      }
+
+      $("status").textContent = "Cuenta regresiva para medianoche…";
+
+      const totalSec = Math.floor(diff / 1000);
+      const days = Math.floor(totalSec / 86400);
+      const hours = Math.floor((totalSec % 86400) / 3600);
+      const mins  = Math.floor((totalSec % 3600) / 60);
+      const secs  = totalSec % 60;
+
+      $("d").textContent = pad2(days);
+      $("h").textContent = pad2(hours);
+      $("m").textContent = pad2(mins);
+      $("s").textContent = pad2(secs);
+    }
+
+    $("btnTest").addEventListener("click", fireworks);
+    $("btnFullscreen").addEventListener("click", async () => {
+      try {
+        if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+        else await document.exitFullscreen();
+      } catch (e) {}
+    });
+
+    formatTZ();
+    setPersonal();
+    tick();
+    setInterval(tick, 250);
+    resize();
+  </script>
+</body>
+</html>
