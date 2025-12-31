@@ -201,10 +201,6 @@
       transition: transform .12s ease, background .12s ease;
     }
     button:active{ transform: scale(.98); }
-    button.primary{
-      background: linear-gradient(90deg, rgba(34,211,238,.22), rgba(236,72,153,.20), rgba(124,58,237,.22));
-      border-color: rgba(34,211,238,.35);
-    }
 
     .footer{
       padding: 0 16px 16px;
@@ -219,7 +215,6 @@
       .content{ padding: 22px 14px 14px; }
     }
 
-    /* canvases */
     canvas#fx, canvas#streaks, canvas#rain {
       position:absolute; inset:0;
       width:100%; height:100%;
@@ -229,7 +224,6 @@
     canvas#fx{ z-index: 4; }
     canvas#rain{ z-index: 6; opacity:0; transition: opacity .8s ease; }
 
-    /* ===== Dragón bonito orbitando ===== */
     .dragonWrap{
       position:absolute;
       inset:0;
@@ -261,12 +255,10 @@
       0%,100%{ transform: translate(-50%,-50%) translateY(-46%) rotate(10deg) scale(1); }
       50%{ transform: translate(-50%,-50%) translateY(-46%) rotate(22deg) scale(1.03); }
     }
-    /* dragón: dos tonos + brillo */
     .dragon .body{ fill: rgba(255,255,255,.86); }
     .dragon .detail{ fill: rgba(255,255,255,.55); }
     .dragon .eye{ fill: rgba(34,211,238,.95); }
 
-    /* ===== Cascabeles ===== */
     .bells{
       position:absolute;
       top: 14px;
@@ -292,7 +284,6 @@
       50%{ transform: rotate(12deg); }
     }
 
-    /* ===== Pasto creciendo ===== */
     .ground{
       position:absolute; left:0; right:0; bottom:0;
       height: 34vh;
@@ -335,7 +326,6 @@
       50%{ transform: rotate(4deg); }
     }
 
-    /* ===== Animalitos ===== */
     .animals{
       position:absolute; inset:0;
       z-index: 9;
@@ -374,7 +364,6 @@
       text-align:center;
     }
 
-    /* ===== Modo medianoche ===== */
     body.midnight .bgNight{ opacity:0; }
     body.midnight .aurora{ opacity:0.08; }
     body.midnight .bgDay{ opacity:1; }
@@ -422,26 +411,18 @@
       <canvas id="fx"></canvas>
       <canvas id="rain"></canvas>
 
-      <!-- Dragón bonito orbitando -->
       <div class="dragonWrap" aria-hidden="true">
         <div class="dragonOrbit">
-          <!-- SVG dragón chino (silueta detallada) -->
           <svg class="dragon" viewBox="0 0 256 256" aria-hidden="true">
-            <!-- cuerpo serpenteante -->
             <path class="body" d="M205 66c-18-18-44-20-66-8-6-10-18-18-32-18-18 0-33 12-36 28-18 5-31 22-31 41 0 19 12 36 30 42 2 20 19 36 40 36h7c-6 10-16 17-29 19 23 7 49 0 66-18 20 14 46 18 70 10-11-3-20-9-26-17h6c26 0 47-20 47-46 0-20-13-37-33-43 4-13 1-28-13-42z"/>
-            <!-- detalles: espinas -->
             <path class="detail" d="M84 76l10-10 8 12-10 10-8-12zm26-18l12-7 4 13-12 7-4-13zm35-3l13 2-6 12-13-2 6-12zm33 10l10 9-11 8-10-9 11-8z"/>
-            <!-- bigotes -->
             <path class="detail" d="M190 96c18 0 28 10 34 18-14-8-26-9-40-4 10-10 6-14 6-14zm-8 16c-12 12-26 18-44 18 16 6 34 5 50-4-2 8-8 14-18 18 22-2 32-18 30-32-6 2-12 2-18 0z"/>
-            <!-- ojo -->
             <circle class="eye" cx="188" cy="92" r="5"/>
-            <!-- colita -->
             <path class="detail" d="M52 142c-10 10-9 22-2 30-2-10 4-18 14-22-7-3-9-5-12-8z"/>
           </svg>
         </div>
       </div>
 
-      <!-- Cascabeles -->
       <div class="bells" aria-hidden="true">
         <svg class="bell" viewBox="0 0 64 64">
           <path fill="#f2c94c" d="M32 6c-7 0-12 6-12 13v7c0 5-2 8-5 11-2 2-3 4-3 6h40c0-2-1-4-3-6-3-3-5-6-5-11v-7C44 12 39 6 32 6z"/>
@@ -476,14 +457,12 @@
         </div>
 
         <div class="actions">
-          <button class="primary" id="btnTest">Probar medianoche 🎆</button>
           <button id="btnFullscreen">Pantalla completa ⛶</button>
         </div>
       </div>
 
       <div class="footer">Zona horaria usada: <b>America/Lima</b> (Perú)</div>
 
-      <!-- Pasto y animales -->
       <div class="ground" aria-hidden="true">
         <div class="grass"></div>
         <div class="blades" id="blades"></div>
@@ -503,19 +482,17 @@
   </div>
 
   <script>
-    // ===== PERSONALIZA AQUÍ =====
-    const PARA = ""; // Ej: "Para mi familia ❤️"
+    const PARA = "";
     const MENSAJE_ANO_NUEVO =
       "Que este nuevo año te traiga mucha salud, trabajo, dinero, paz y prosperidad. " +
       "Que todo lo bueno se multiplique, que los sueños se cumplan y que nunca falte la alegría. ✨";
-    const FIRMA = ""; // Ej: "— Hugo"
+    const FIRMA = "";
     const timeZone = "America/Lima";
 
     const $ = (id) => document.getElementById(id);
     const pad2 = (n) => String(n).padStart(2, "0");
 
     // ===== AUDIO (cascabeles) =====
-    // Nota: en celular SOLO suena si el usuario tocó la pantalla al menos una vez.
     let audioEnabled = false;
     let audioCtx = null;
 
@@ -523,7 +500,6 @@
       if (audioEnabled) return true;
       try {
         audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-        // algunos navegadores requieren resume() tras gesto
         audioCtx.resume?.();
         audioEnabled = true;
         return true;
@@ -532,7 +508,6 @@
       }
     }
 
-    // “ding” tipo cascabel usando osciladores (sin archivos)
     function bellDing(time, freq) {
       if (!audioEnabled || !audioCtx) return;
       const o = audioCtx.createOscillator();
@@ -540,7 +515,6 @@
 
       o.type = "sine";
       o.frequency.setValueAtTime(freq, time);
-      // pequeño “brillo”
       o.frequency.exponentialRampToValueAtTime(freq * 1.6, time + 0.04);
 
       g.gain.setValueAtTime(0.0001, time);
@@ -557,7 +531,6 @@
     function playBellsSequence() {
       if (!ensureAudio()) return;
       const t0 = audioCtx.currentTime + 0.02;
-      // mini melodía (3 cascabeles)
       bellDing(t0, 880);
       bellDing(t0 + 0.14, 988);
       bellDing(t0 + 0.28, 784);
@@ -619,7 +592,7 @@
       return ctx;
     }
 
-    // ===== “FIUUU” fugaces =====
+    // ===== FIUUU =====
     const streakCanvas = document.getElementById("streaks");
     let sctx = null;
     let streaks = [];
@@ -758,7 +731,7 @@
     }
 
     function showMidnight(){
-      const y = nowInTZ().getFullYear(); // ya cambió el año
+      const y = nowInTZ().getFullYear();
       document.title = `¡Feliz Año Nuevo ${y}!`;
 
       $("status").textContent = "¡Ya es medianoche! 🎉";
@@ -771,20 +744,12 @@
 
       document.body.classList.add("midnight");
 
-      // Secuencia:
-      // 1) Sonido cascabeles (si el usuario ya tocó antes)
       playBellsSequence();
-
-      // 2) lluvia unos segundos
       startRain(6);
-
-      // 3) confetti
       burstConfetti(380);
 
-      // vibra
       if (navigator.vibrate) navigator.vibrate([120,60,120]);
 
-      // repetir cascabeles un par de veces
       setTimeout(playBellsSequence, 900);
       setTimeout(playBellsSequence, 1800);
     }
@@ -820,21 +785,16 @@
       $("s").textContent = pad2(secs);
     }
 
-    // ===== BOTONES (habilitan audio) =====
-    document.getElementById("btnTest").addEventListener("click", () => {
-      ensureAudio(); // habilitar audio con gesto
-      showMidnight();
-    });
-
+    // ===== BOTÓN ÚNICO =====
     document.getElementById("btnFullscreen").addEventListener("click", async () => {
-      ensureAudio(); // habilitar audio con gesto
+      ensureAudio(); // habilita audio con gesto
       try{
         if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
         else await document.exitFullscreen();
       }catch(e){}
     });
 
-    // TIP: 1 toque en cualquier parte también habilita audio
+    // 1 toque en cualquier parte habilita audio
     window.addEventListener("pointerdown", () => { ensureAudio(); }, { once:true });
 
     // ===== INIT =====
