@@ -62,7 +62,7 @@
 </div>
 
 <script>
-const piezas = [];
+const piezas = JSON.parse(localStorage.getItem('piezas')) || [];  // Cargar los datos del almacenamiento local
 const piezaInput = document.getElementById('pieza');
 const anchoInput = document.getElementById('ancho');
 const largoInput = document.getElementById('largo');
@@ -107,6 +107,9 @@ function agregar() {
 
   piezas.push({ nombre: nombreMayus, ancho, anchoPlg, largo, largoPlg, tot });
 
+  // Guardar en localStorage
+  localStorage.setItem('piezas', JSON.stringify(piezas));
+
   const fila = `<tr>
                   <td>${nombreMayus}</td>
                   <td>${ancho}</td>
@@ -139,12 +142,18 @@ function editar(index) {
   // Eliminar la pieza actual antes de editar
   piezas.splice(index, 1);
   lista.deleteRow(index);
+
+  // Guardar cambios
+  localStorage.setItem('piezas', JSON.stringify(piezas));
 }
 
 // Eliminar pieza
 function eliminar(index) {
   piezas.splice(index, 1);
   lista.deleteRow(index);
+
+  // Guardar cambios
+  localStorage.setItem('piezas', JSON.stringify(piezas));
 }
 
 // Descargar Excel (.xlsx) usando SheetJS
@@ -191,6 +200,27 @@ btnImprimir.addEventListener("click", () => {
   printWindow.document.close();
   printWindow.print();
 });
+
+// Cargar las piezas almacenadas al cargar la página
+window.onload = function() {
+  if (piezas.length > 0) {
+    piezas.forEach((pieza, index) => {
+      const fila = `<tr>
+                      <td>${pieza.nombre}</td>
+                      <td>${pieza.ancho}</td>
+                      <td>${pieza.anchoPlg}</td>
+                      <td>${pieza.largo}</td>
+                      <td>${pieza.largoPlg}</td>
+                      <td>${pieza.tot}</td>
+                      <td>
+                        <span class="edit-btn" onclick="editar(${index})">Editar</span>
+                        <span class="delete-btn" onclick="eliminar(${index})">Eliminar</span>
+                      </td>
+                    </tr>`;
+      lista.innerHTML += fila;
+    });
+  }
+};
 </script>
 
 </body>
