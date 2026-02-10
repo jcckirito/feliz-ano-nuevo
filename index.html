@@ -48,7 +48,9 @@
       <tr>
         <th>Pieza</th>
         <th>Ancho (mm)</th>
+        <th>Ancho (plg)</th>
         <th>Largo (mm)</th>
+        <th>Largo (plg)</th>
         <th>Tot.p2</th>
       </tr>
     </thead>
@@ -83,7 +85,7 @@ largoInput.addEventListener("input", calcular);
 
 // Agregar pieza a la lista
 function agregar() {
-  const nombre = piezaInput.value.trim();
+  const nombre = piezaInput.value.trim().toUpperCase();  // Convertir nombre a mayúsculas
   const ancho = anchoInput.value.trim();
   const largo = largoInput.value.trim();
   const tot = totalDisplay.innerText;
@@ -93,9 +95,13 @@ function agregar() {
     return;
   }
 
-  piezas.push({ nombre, ancho, largo, tot });
+  // Conversión a pulgadas (1 pulgada = 25.4 mm)
+  const anchoPlg = (ancho / 25.4).toFixed(2);
+  const largoPlg = (largo / 25.4).toFixed(2);
 
-  const fila = `<tr><td>${nombre}</td><td>${ancho}</td><td>${largo}</td><td>${tot}</td></tr>`;
+  piezas.push({ nombre, ancho, anchoPlg, largo, largoPlg, tot });
+
+  const fila = `<tr><td>${nombre}</td><td>${ancho}</td><td>${anchoPlg}</td><td>${largo}</td><td>${largoPlg}</td><td>${tot}</td></tr>`;
   lista.innerHTML += fila;
 
   piezaInput.value = "";
@@ -112,13 +118,19 @@ btnDescargar.addEventListener("click", () => {
     return;
   }
 
-  // Preparar datos
-  const ws_data = [["Pieza", "Ancho (mm)", "Largo (mm)", "Tot.p2"]];
-  piezas.forEach(p => ws_data.push([p.nombre, p.ancho, p.largo, p.tot]));
+  // Preparar datos con conversiones
+  const ws_data = [["Pieza", "Ancho (mm)", "Ancho (plg)", "Largo (mm)", "Largo (plg)", "Tot.p2"]];
+  piezas.forEach(p => ws_data.push([p.nombre, p.ancho, p.anchoPlg, p.largo, p.largoPlg, p.tot]));
 
   // Crear hoja y libro
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.aoa_to_sheet(ws_data);
+
+  // Establecer el título "FODEPICO"
+  const title = [["FODEPICO"]];
+  const titleWs = XLSX.utils.aoa_to_sheet(title);
+  XLSX.utils.book_append_sheet(wb, titleWs, "Título");
+
   XLSX.utils.book_append_sheet(wb, ws, "Piezas");
 
   // Descargar archivo
@@ -135,9 +147,9 @@ btnImprimir.addEventListener("click", () => {
   // Crear tabla para impresión
   let printWindow = window.open('', '', 'height=600,width=800');
   printWindow.document.write('<html><head><title>Piezas Agregadas</title></head><body>');
-  printWindow.document.write('<h1>Piezas Agregadas</h1><table border="1"><tr><th>Pieza</th><th>Ancho (mm)</th><th>Largo (mm)</th><th>Tot.p2</th></tr>');
+  printWindow.document.write('<h1>Piezas Agregadas</h1><table border="1"><tr><th>Pieza</th><th>Ancho (mm)</th><th>Ancho (plg)</th><th>Largo (mm)</th><th>Largo (plg)</th><th>Tot.p2</th></tr>');
   piezas.forEach(pieza => {
-    printWindow.document.write(`<tr><td>${pieza.nombre}</td><td>${pieza.ancho}</td><td>${pieza.largo}</td><td>${pieza.tot}</td></tr>`);
+    printWindow.document.write(`<tr><td>${pieza.nombre}</td><td>${pieza.ancho}</td><td>${pieza.anchoPlg}</td><td>${pieza.largo}</td><td>${pieza.largoPlg}</td><td>${pieza.tot}</td></tr>`);
   });
   printWindow.document.write('</table></body></html>');
   printWindow.document.close();
