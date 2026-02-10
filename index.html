@@ -10,7 +10,7 @@
   .header { background:linear-gradient(135deg,#00ff66,#00cc55); padding:25px; text-align:center; color:#0b3d1f; font-size:30px; font-weight:800; letter-spacing:2px; }
   .card { background:#fff; margin:20px; padding:25px; border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,0.1); }
   label { font-size:18px; font-weight:600; }
-  input { width:100%; padding:16px; font-size:20px; margin-top:8px; margin-bottom:15px; border-radius:12px; border:2px solid #e0e0e0; }
+  input { width:100%; padding:16px; font-size:18px; margin-top:8px; margin-bottom:15px; border-radius:12px; border:2px solid #e0e0e0; }
   .total { background:linear-gradient(135deg,#1f7a3a,#2ecc71); color:white; text-align:center; padding:22px; border-radius:16px; font-size:26px; font-weight:700; }
   button { width:90%; margin:10px auto; display:block; padding:18px; font-size:20px; font-weight:700; border:none; border-radius:16px; background:#0b3d1f; color:white; cursor:pointer; transition: transform 0.1s ease; }
   button:active { transform:scale(0.97); }
@@ -19,8 +19,8 @@
   th { background:#00cc55; color:#0b3d1f; }
   .edit-btn, .delete-btn { cursor: pointer; color: #ff9800; margin-left: 5px; }
   .delete-btn { color: #f44336; }
-  
-  /* Media Queries for responsive design */
+
+  /* Responsive Styles */
   @media (max-width: 768px) {
     .header {
       font-size: 24px;
@@ -28,22 +28,22 @@
     }
     .card {
       margin: 10px;
-      padding: 15px;
+      padding: 20px;
     }
     label, input, button {
       font-size: 16px;
+    }
+    .total {
+      font-size: 24px;
+    }
+    button {
+      width: 100%;
     }
     table {
       font-size: 14px;
     }
     th, td {
       padding: 8px;
-    }
-    .total {
-      font-size: 22px;
-    }
-    button {
-      width: 100%;
     }
   }
 
@@ -53,7 +53,10 @@
       padding: 15px;
     }
     .card {
-      padding: 12px;
+      padding: 15px;
+    }
+    input, button {
+      font-size: 14px;
     }
     table {
       font-size: 12px;
@@ -69,7 +72,7 @@
     }
   }
 
-  /* Make the table scrollable on small screens */
+  /* Make table scrollable horizontally on small screens */
   @media (max-width: 768px) {
     table {
       display: block;
