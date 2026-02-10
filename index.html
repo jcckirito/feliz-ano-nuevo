@@ -115,6 +115,7 @@
 </div>
 
 <button id="btnAgregar">➕ Agregar pieza</button>
+<button id="btnDescargar">⬇ Descargar Excel (CSV)</button>
 
 <div class="card">
   <h3>Piezas agregadas</h3>
@@ -140,7 +141,9 @@
   const totalDisplay = document.getElementById('total');
   const lista = document.getElementById('lista');
   const btnAgregar = document.getElementById('btnAgregar');
+  const btnDescargar = document.getElementById('btnDescargar');
 
+  // Calcular Tot.p2 en tiempo real
   function calcular() {
     const ancho = parseFloat(anchoInput.value);
     const largo = parseFloat(largoInput.value);
@@ -155,6 +158,10 @@
     }
   }
 
+  anchoInput.addEventListener("input", calcular);
+  largoInput.addEventListener("input", calcular);
+
+  // Agregar pieza a la lista
   function agregar() {
     const nombre = piezaInput.value.trim();
     const ancho = anchoInput.value.trim();
@@ -186,9 +193,30 @@
     totalDisplay.innerText = "0.00";
   }
 
-  anchoInput.addEventListener("input", calcular);
-  largoInput.addEventListener("input", calcular);
   btnAgregar.addEventListener("click", agregar);
+
+  // Descargar CSV (Excel)
+  btnDescargar.addEventListener('click', () => {
+    if(piezas.length === 0){
+      alert("No hay piezas para descargar");
+      return;
+    }
+
+    let csv = "Pieza,Ancho (mm),Largo (mm),Tot.p2\n";
+    piezas.forEach(p => {
+      csv += `"${p.nombre}",${p.ancho},${p.largo},${p.tot}\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'fodepico_piezas.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
 </script>
 
 </body>
