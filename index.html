@@ -17,6 +17,8 @@
   table { width:100%; border-collapse:collapse; margin-top:15px; font-size:16px; }
   th, td { padding:10px; border-bottom:1px solid #ccc; text-align:center; }
   th { background:#00cc55; color:#0b3d1f; }
+  .edit-btn, .delete-btn { cursor: pointer; color: #ff9800; margin-left: 5px; }
+  .delete-btn { color: #f44336; }
 </style>
 
 <!-- Librería SheetJS -->
@@ -52,6 +54,7 @@
         <th>Largo (mm)</th>
         <th>Largo (plg)</th>
         <th>Tot.p2</th>
+        <th>Acciones</th>
       </tr>
     </thead>
     <tbody id="lista"></tbody>
@@ -85,7 +88,7 @@ largoInput.addEventListener("input", calcular);
 
 // Agregar pieza a la lista
 function agregar() {
-  const nombre = piezaInput.value.trim().toUpperCase();  // Convertir nombre a mayúsculas
+  const nombre = piezaInput.value.trim();
   const ancho = anchoInput.value.trim();
   const largo = largoInput.value.trim();
   const tot = totalDisplay.innerText;
@@ -95,13 +98,27 @@ function agregar() {
     return;
   }
 
+  // Primera letra mayúscula
+  const nombreMayus = nombre.charAt(0).toUpperCase() + nombre.slice(1).toLowerCase();
+
   // Conversión a pulgadas (1 pulgada = 25.4 mm)
   const anchoPlg = (ancho / 25.4).toFixed(2);
   const largoPlg = (largo / 25.4).toFixed(2);
 
-  piezas.push({ nombre, ancho, anchoPlg, largo, largoPlg, tot });
+  piezas.push({ nombre: nombreMayus, ancho, anchoPlg, largo, largoPlg, tot });
 
-  const fila = `<tr><td>${nombre}</td><td>${ancho}</td><td>${anchoPlg}</td><td>${largo}</td><td>${largoPlg}</td><td>${tot}</td></tr>`;
+  const fila = `<tr>
+                  <td>${nombreMayus}</td>
+                  <td>${ancho}</td>
+                  <td>${anchoPlg}</td>
+                  <td>${largo}</td>
+                  <td>${largoPlg}</td>
+                  <td>${tot}</td>
+                  <td>
+                    <span class="edit-btn" onclick="editar(${piezas.length - 1})">Editar</span>
+                    <span class="delete-btn" onclick="eliminar(${piezas.length - 1})">Eliminar</span>
+                  </td>
+                </tr>`;
   lista.innerHTML += fila;
 
   piezaInput.value = "";
@@ -110,6 +127,25 @@ function agregar() {
   totalDisplay.innerText = "0.00";
 }
 btnAgregar.addEventListener("click", agregar);
+
+// Editar pieza
+function editar(index) {
+  const pieza = piezas[index];
+  piezaInput.value = pieza.nombre;
+  anchoInput.value = pieza.ancho;
+  largoInput.value = pieza.largo;
+  totalDisplay.innerText = pieza.tot;
+
+  // Eliminar la pieza actual antes de editar
+  piezas.splice(index, 1);
+  lista.deleteRow(index);
+}
+
+// Eliminar pieza
+function eliminar(index) {
+  piezas.splice(index, 1);
+  lista.deleteRow(index);
+}
 
 // Descargar Excel (.xlsx) usando SheetJS
 btnDescargar.addEventListener("click", () => {
