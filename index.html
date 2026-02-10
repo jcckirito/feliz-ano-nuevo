@@ -19,6 +19,64 @@
   th { background:#00cc55; color:#0b3d1f; }
   .edit-btn, .delete-btn { cursor: pointer; color: #ff9800; margin-left: 5px; }
   .delete-btn { color: #f44336; }
+  
+  /* Media Queries for responsive design */
+  @media (max-width: 768px) {
+    .header {
+      font-size: 24px;
+      padding: 20px;
+    }
+    .card {
+      margin: 10px;
+      padding: 15px;
+    }
+    label, input, button {
+      font-size: 16px;
+    }
+    table {
+      font-size: 14px;
+    }
+    th, td {
+      padding: 8px;
+    }
+    .total {
+      font-size: 22px;
+    }
+    button {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .header {
+      font-size: 20px;
+      padding: 15px;
+    }
+    .card {
+      padding: 12px;
+    }
+    table {
+      font-size: 12px;
+    }
+    th, td {
+      padding: 6px;
+    }
+    .total {
+      font-size: 20px;
+    }
+    .edit-btn, .delete-btn {
+      font-size: 12px;
+    }
+  }
+
+  /* Make the table scrollable on small screens */
+  @media (max-width: 768px) {
+    table {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+  }
 </style>
 
 <!-- Librería SheetJS -->
