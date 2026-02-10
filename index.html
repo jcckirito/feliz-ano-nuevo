@@ -6,94 +6,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <style>
-  body {
-    margin: 0;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background: #f2f4f8;
-  }
-
-  .header {
-    background: linear-gradient(135deg,#00ff66,#00cc55);
-    padding: 25px;
-    text-align: center;
-    color: #0b3d1f;
-    font-size: 30px;
-    font-weight: 800;
-    letter-spacing: 2px;
-  }
-
-  .card {
-    background: #fff;
-    margin: 20px;
-    padding: 25px;
-    border-radius: 18px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  }
-
-  label {
-    font-size: 18px;
-    font-weight: 600;
-  }
-
-  input {
-    width: 100%;
-    padding: 16px;
-    font-size: 20px;
-    margin-top: 8px;
-    margin-bottom: 15px;
-    border-radius: 12px;
-    border: 2px solid #e0e0e0;
-  }
-
-  .total {
-    background: linear-gradient(135deg,#1f7a3a,#2ecc71);
-    color: white;
-    text-align: center;
-    padding: 22px;
-    border-radius: 16px;
-    font-size: 26px;
-    font-weight: 700;
-  }
-
-  button {
-    width: 90%;
-    margin: 10px auto;
-    display: block;
-    padding: 18px;
-    font-size: 20px;
-    font-weight: 700;
-    border: none;
-    border-radius: 16px;
-    background: #0b3d1f;
-    color: white;
-    cursor: pointer;
-    transition: transform 0.1s ease;
-  }
-
-  button:active {
-    transform: scale(0.97);
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    font-size: 16px;
-  }
-
-  th, td {
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-    text-align: center;
-  }
-
-  th {
-    background: #00cc55;
-    color: #0b3d1f;
-  }
+  body { margin:0; font-family:'Segoe UI', Arial, sans-serif; background:#f2f4f8; }
+  .header { background:linear-gradient(135deg,#00ff66,#00cc55); padding:25px; text-align:center; color:#0b3d1f; font-size:30px; font-weight:800; letter-spacing:2px; }
+  .card { background:#fff; margin:20px; padding:25px; border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,0.1); }
+  label { font-size:18px; font-weight:600; }
+  input { width:100%; padding:16px; font-size:20px; margin-top:8px; margin-bottom:15px; border-radius:12px; border:2px solid #e0e0e0; }
+  .total { background:linear-gradient(135deg,#1f7a3a,#2ecc71); color:white; text-align:center; padding:22px; border-radius:16px; font-size:26px; font-weight:700; }
+  button { width:90%; margin:10px auto; display:block; padding:18px; font-size:20px; font-weight:700; border:none; border-radius:16px; background:#0b3d1f; color:white; cursor:pointer; transition: transform 0.1s ease; }
+  button:active { transform:scale(0.97); }
+  table { width:100%; border-collapse:collapse; margin-top:15px; font-size:16px; }
+  th, td { padding:10px; border-bottom:1px solid #ccc; text-align:center; }
+  th { background:#00cc55; color:#0b3d1f; }
 </style>
-</head>
 
+<!-- Librería SheetJS -->
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+</head>
 <body>
 
 <div class="header">FODEPICO</div>
@@ -101,21 +29,15 @@
 <div class="card">
   <label for="pieza">Nombre de la pieza</label>
   <input type="text" id="pieza" placeholder="Ej: Costado" />
-
   <label for="ancho">Ancho (mm)</label>
   <input type="number" id="ancho" placeholder="Ej: 500" />
-
   <label for="largo">Largo (mm)</label>
   <input type="number" id="largo" placeholder="Ej: 1000" />
-
-  <div class="total">
-    Tot.p2<br />
-    <span id="total">0.00</span>
-  </div>
+  <div class="total">Tot.p2<br><span id="total">0.00</span></div>
 </div>
 
 <button id="btnAgregar">➕ Agregar pieza</button>
-<button id="btnDescargar">⬇ Descargar Excel (CSV)</button>
+<button id="btnDescargar">⬇ Descargar Excel (.xlsx)</button>
 
 <div class="card">
   <h3>Piezas agregadas</h3>
@@ -133,90 +55,72 @@
 </div>
 
 <script>
-  const piezas = [];
+const piezas = [];
+const piezaInput = document.getElementById('pieza');
+const anchoInput = document.getElementById('ancho');
+const largoInput = document.getElementById('largo');
+const totalDisplay = document.getElementById('total');
+const lista = document.getElementById('lista');
+const btnAgregar = document.getElementById('btnAgregar');
+const btnDescargar = document.getElementById('btnDescargar');
 
-  const piezaInput = document.getElementById('pieza');
-  const anchoInput = document.getElementById('ancho');
-  const largoInput = document.getElementById('largo');
-  const totalDisplay = document.getElementById('total');
-  const lista = document.getElementById('lista');
-  const btnAgregar = document.getElementById('btnAgregar');
-  const btnDescargar = document.getElementById('btnDescargar');
-
-  // Calcular Tot.p2 en tiempo real
-  function calcular() {
-    const ancho = parseFloat(anchoInput.value);
-    const largo = parseFloat(largoInput.value);
-
-    if (ancho > 0 && largo > 0) {
-      const anchoP = ancho / 25;
-      const largoP = largo / 25;
-      const tot = (anchoP * largoP) / 144;
-      totalDisplay.innerText = tot.toFixed(2);
-    } else {
-      totalDisplay.innerText = "0.00";
-    }
-  }
-
-  anchoInput.addEventListener("input", calcular);
-  largoInput.addEventListener("input", calcular);
-
-  // Agregar pieza a la lista
-  function agregar() {
-    const nombre = piezaInput.value.trim();
-    const ancho = anchoInput.value.trim();
-    const largo = largoInput.value.trim();
-    const tot = totalDisplay.innerText;
-
-    if (!nombre || !ancho || !largo || tot === "0.00") {
-      alert("Por favor completa todos los datos correctamente.");
-      return;
-    }
-
-    piezas.push({ nombre, ancho, largo, tot });
-
-    const fila = `
-      <tr>
-        <td>${nombre}</td>
-        <td>${ancho}</td>
-        <td>${largo}</td>
-        <td>${tot}</td>
-      </tr>
-    `;
-
-    lista.innerHTML += fila;
-
-    // Limpiar inputs y total
-    piezaInput.value = "";
-    anchoInput.value = "";
-    largoInput.value = "";
+// Cálculo en tiempo real
+function calcular() {
+  const ancho = parseFloat(anchoInput.value);
+  const largo = parseFloat(largoInput.value);
+  if (ancho > 0 && largo > 0) {
+    const tot = ((ancho/25)*(largo/25))/144;
+    totalDisplay.innerText = tot.toFixed(2);
+  } else {
     totalDisplay.innerText = "0.00";
   }
+}
+anchoInput.addEventListener("input", calcular);
+largoInput.addEventListener("input", calcular);
 
-  btnAgregar.addEventListener("click", agregar);
+// Agregar pieza a la lista
+function agregar() {
+  const nombre = piezaInput.value.trim();
+  const ancho = anchoInput.value.trim();
+  const largo = largoInput.value.trim();
+  const tot = totalDisplay.innerText;
 
-  // Descargar CSV (Excel)
-  btnDescargar.addEventListener('click', () => {
-    if(piezas.length === 0){
-      alert("No hay piezas para descargar");
-      return;
-    }
+  if (!nombre || !ancho || !largo || tot === "0.00") {
+    alert("Por favor completa todos los datos correctamente.");
+    return;
+  }
 
-    let csv = "Pieza,Ancho (mm),Largo (mm),Tot.p2\n";
-    piezas.forEach(p => {
-      csv += `"${p.nombre}",${p.ancho},${p.largo},${p.tot}\n`;
-    });
+  piezas.push({ nombre, ancho, largo, tot });
 
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'fodepico_piezas.csv';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  });
+  const fila = `<tr><td>${nombre}</td><td>${ancho}</td><td>${largo}</td><td>${tot}</td></tr>`;
+  lista.innerHTML += fila;
+
+  piezaInput.value = "";
+  anchoInput.value = "";
+  largoInput.value = "";
+  totalDisplay.innerText = "0.00";
+}
+btnAgregar.addEventListener("click", agregar);
+
+// Descargar Excel (.xlsx) usando SheetJS
+btnDescargar.addEventListener("click", () => {
+  if(piezas.length === 0){
+    alert("No hay piezas para descargar");
+    return;
+  }
+
+  // Preparar datos
+  const ws_data = [["Pieza","Ancho (mm)","Largo (mm)","Tot.p2"]];
+  piezas.forEach(p => ws_data.push([p.nombre, p.ancho, p.largo, p.tot]));
+
+  // Crear hoja y libro
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(ws_data);
+  XLSX.utils.book_append_sheet(wb, ws, "Piezas");
+
+  // Descargar archivo
+  XLSX.writeFile(wb, "FODEPICO_Piezas.xlsx");
+});
 </script>
 
 </body>
