@@ -21,6 +21,7 @@
 
 <!-- Librería SheetJS -->
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
 </head>
 <body>
 
@@ -38,6 +39,7 @@
 
 <button id="btnAgregar">➕ Agregar pieza</button>
 <button id="btnDescargar">⬇ Descargar Excel (.xlsx)</button>
+<button id="btnImprimir">🖨 Imprimir datos</button>
 
 <div class="card">
   <h3>Piezas agregadas</h3>
@@ -63,13 +65,14 @@ const totalDisplay = document.getElementById('total');
 const lista = document.getElementById('lista');
 const btnAgregar = document.getElementById('btnAgregar');
 const btnDescargar = document.getElementById('btnDescargar');
+const btnImprimir = document.getElementById('btnImprimir');
 
 // Cálculo en tiempo real
 function calcular() {
   const ancho = parseFloat(anchoInput.value);
   const largo = parseFloat(largoInput.value);
   if (ancho > 0 && largo > 0) {
-    const tot = ((ancho/25)*(largo/25))/144;
+    const tot = ((ancho / 25) * (largo / 25)) / 144;
     totalDisplay.innerText = tot.toFixed(2);
   } else {
     totalDisplay.innerText = "0.00";
@@ -104,13 +107,13 @@ btnAgregar.addEventListener("click", agregar);
 
 // Descargar Excel (.xlsx) usando SheetJS
 btnDescargar.addEventListener("click", () => {
-  if(piezas.length === 0){
+  if (piezas.length === 0) {
     alert("No hay piezas para descargar");
     return;
   }
 
   // Preparar datos
-  const ws_data = [["Pieza","Ancho (mm)","Largo (mm)","Tot.p2"]];
+  const ws_data = [["Pieza", "Ancho (mm)", "Largo (mm)", "Tot.p2"]];
   piezas.forEach(p => ws_data.push([p.nombre, p.ancho, p.largo, p.tot]));
 
   // Crear hoja y libro
@@ -120,6 +123,25 @@ btnDescargar.addEventListener("click", () => {
 
   // Descargar archivo
   XLSX.writeFile(wb, "FODEPICO_Piezas.xlsx");
+});
+
+// Imprimir los datos
+btnImprimir.addEventListener("click", () => {
+  if (piezas.length === 0) {
+    alert("No hay piezas para imprimir");
+    return;
+  }
+
+  // Crear tabla para impresión
+  let printWindow = window.open('', '', 'height=600,width=800');
+  printWindow.document.write('<html><head><title>Piezas Agregadas</title></head><body>');
+  printWindow.document.write('<h1>Piezas Agregadas</h1><table border="1"><tr><th>Pieza</th><th>Ancho (mm)</th><th>Largo (mm)</th><th>Tot.p2</th></tr>');
+  piezas.forEach(pieza => {
+    printWindow.document.write(`<tr><td>${pieza.nombre}</td><td>${pieza.ancho}</td><td>${pieza.largo}</td><td>${pieza.tot}</td></tr>`);
+  });
+  printWindow.document.write('</table></body></html>');
+  printWindow.document.close();
+  printWindow.print();
 });
 </script>
 
