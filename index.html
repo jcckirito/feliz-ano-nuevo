@@ -103,6 +103,7 @@
 <button id="btnAgregar">➕ Agregar pieza</button>
 <button id="btnDescargar">⬇ Descargar Excel (.xlsx)</button>
 <button id="btnImprimir">🖨 Imprimir datos</button>
+<button id="btnBorrarTodo">❌ Borrar todo</button>
 
 <div class="card">
   <h3>Piezas agregadas</h3>
@@ -132,6 +133,7 @@ const lista = document.getElementById('lista');
 const btnAgregar = document.getElementById('btnAgregar');
 const btnDescargar = document.getElementById('btnDescargar');
 const btnImprimir = document.getElementById('btnImprimir');
+const btnBorrarTodo = document.getElementById('btnBorrarTodo');
 
 // Cálculo en tiempo real
 function calcular() {
@@ -216,6 +218,16 @@ function eliminar(index) {
   // Guardar cambios
   localStorage.setItem('piezas', JSON.stringify(piezas));
 }
+
+// Borrar todo
+btnBorrarTodo.addEventListener("click", () => {
+  if (confirm("¿Estás seguro de que quieres borrar todos los datos?")) {
+    // Limpiar la lista y el localStorage
+    piezas.length = 0;
+    localStorage.setItem('piezas', JSON.stringify(piezas));
+    lista.innerHTML = "";  // Limpiar la tabla visualmente
+  }
+});
 
 // Descargar Excel (.xlsx) usando SheetJS
 btnDescargar.addEventListener("click", () => {
