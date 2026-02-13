@@ -19,84 +19,27 @@
   th { background:#00cc55; color:#0b3d1f; }
   .edit-btn, .delete-btn { cursor: pointer; color: #ff9800; margin-left: 5px; }
   .delete-btn { color: #f44336; }
-
-  /* Responsive Styles */
-  @media (max-width: 768px) {
-    .header {
-      font-size: 24px;
-      padding: 20px;
-    }
-    .card {
-      margin: 10px;
-      padding: 20px;
-    }
-    label, input, button {
-      font-size: 16px;
-    }
-    .total {
-      font-size: 24px;
-    }
-    button {
-      width: 100%;
-    }
-    table {
-      font-size: 14px;
-    }
-    th, td {
-      padding: 8px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .header {
-      font-size: 20px;
-      padding: 15px;
-    }
-    .card {
-      padding: 15px;
-    }
-    input, button {
-      font-size: 14px;
-    }
-    table {
-      font-size: 12px;
-    }
-    th, td {
-      padding: 6px;
-    }
-    .total {
-      font-size: 20px;
-    }
-    .edit-btn, .delete-btn {
-      font-size: 12px;
-    }
-  }
-
-  /* Make table scrollable horizontally on small screens */
-  @media (max-width: 768px) {
-    table {
-      display: block;
-      overflow-x: auto;
-      white-space: nowrap;
-    }
-  }
 </style>
 
-<!-- Librería SheetJS -->
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-
 </head>
 <body>
 
 <div class="header">FODEPICO</div>
 
 <div class="card">
-  <label for="pieza">Nombre de la pieza</label>
+  <label>Nombre de la pieza</label>
   <input type="text" id="pieza" placeholder="Ej: Costado" />
-  <label for="ancho">Ancho (mm)</label>
+
+  <label>Ancho (mm)</label>
   <input type="number" id="ancho" placeholder="Ej: 500" />
-  <label for="largo">Largo (mm)</label>
+
+  <label>Largo (mm)</label>
   <input type="number" id="largo" placeholder="Ej: 1000" />
+
+  <label>Cantidad</label>
+  <input type="number" id="cantidad" placeholder="Ej: 5" />
+
   <div class="total">Tot.p2<br><span id="total">0.00</span></div>
 </div>
 
@@ -115,6 +58,7 @@
         <th>Ancho (plg)</th>
         <th>Largo (mm)</th>
         <th>Largo (plg)</th>
+        <th>Cantidad</th>
         <th>Tot.p2</th>
         <th>Acciones</th>
       </tr>
@@ -124,18 +68,15 @@
 </div>
 
 <script>
-const piezas = JSON.parse(localStorage.getItem('piezas')) || [];  // Cargar los datos del almacenamiento local
+const piezas = JSON.parse(localStorage.getItem('piezas')) || [];
+
 const piezaInput = document.getElementById('pieza');
 const anchoInput = document.getElementById('ancho');
 const largoInput = document.getElementById('largo');
+const cantidadInput = document.getElementById('cantidad');
 const totalDisplay = document.getElementById('total');
 const lista = document.getElementById('lista');
-const btnAgregar = document.getElementById('btnAgregar');
-const btnDescargar = document.getElementById('btnDescargar');
-const btnImprimir = document.getElementById('btnImprimir');
-const btnBorrarTodo = document.getElementById('btnBorrarTodo');
 
-// Cálculo en tiempo real
 function calcular() {
   const ancho = parseFloat(anchoInput.value);
   const largo = parseFloat(largoInput.value);
@@ -149,152 +90,129 @@ function calcular() {
 anchoInput.addEventListener("input", calcular);
 largoInput.addEventListener("input", calcular);
 
-// Agregar pieza a la lista
+function renderizar() {
+  lista.innerHTML = "";
+  piezas.forEach((pieza, index) => {
+    const fila = `<tr>
+      <td>${pieza.nombre}</td>
+      <td>${pieza.ancho}</td>
+      <td>${pieza.anchoPlg}</td>
+      <td>${pieza.largo}</td>
+      <td>${pieza.largoPlg}</td>
+      <td>${pieza.cantidad}</td>
+      <td>${pieza.tot}</td>
+      <td>
+        <span class="edit-btn" onclick="editar(${index})">Editar</span>
+        <span class="delete-btn" onclick="eliminar(${index})">Eliminar</span>
+      </td>
+    </tr>`;
+    lista.innerHTML += fila;
+  });
+}
+
 function agregar() {
   const nombre = piezaInput.value.trim();
   const ancho = anchoInput.value.trim();
   const largo = largoInput.value.trim();
+  const cantidad = cantidadInput.value.trim();
   const tot = totalDisplay.innerText;
 
-  if (!nombre || !ancho || !largo || tot === "0.00") {
+  if (!nombre || !ancho || !largo || !cantidad || tot === "0.00") {
     alert("Por favor completa todos los datos correctamente.");
     return;
   }
 
-  // Primera letra mayúscula y el resto minúscula
   const nombreMayus = nombre.charAt(0).toUpperCase() + nombre.slice(1).toLowerCase();
-
-  // Conversión a pulgadas (1 pulgada = 25.4 mm)
   const anchoPlg = (ancho / 25.4).toFixed(2);
   const largoPlg = (largo / 25.4).toFixed(2);
 
-  piezas.push({ nombre: nombreMayus, ancho, anchoPlg, largo, largoPlg, tot });
-
-  // Guardar en localStorage
+  piezas.push({ nombre: nombreMayus, ancho, anchoPlg, largo, largoPlg, cantidad, tot });
   localStorage.setItem('piezas', JSON.stringify(piezas));
-
-  const fila = `<tr>
-                  <td>${nombreMayus}</td>
-                  <td>${ancho}</td>
-                  <td>${anchoPlg}</td>
-                  <td>${largo}</td>
-                  <td>${largoPlg}</td>
-                  <td>${tot}</td>
-                  <td>
-                    <span class="edit-btn" onclick="editar(${piezas.length - 1})">Editar</span>
-                    <span class="delete-btn" onclick="eliminar(${piezas.length - 1})">Eliminar</span>
-                  </td>
-                </tr>`;
-  lista.innerHTML += fila;
 
   piezaInput.value = "";
   anchoInput.value = "";
   largoInput.value = "";
+  cantidadInput.value = "";
   totalDisplay.innerText = "0.00";
-}
-btnAgregar.addEventListener("click", agregar);
 
-// Editar pieza
+  renderizar();
+}
+
 function editar(index) {
   const pieza = piezas[index];
   piezaInput.value = pieza.nombre;
   anchoInput.value = pieza.ancho;
   largoInput.value = pieza.largo;
+  cantidadInput.value = pieza.cantidad;
   totalDisplay.innerText = pieza.tot;
 
-  // Eliminar la pieza actual antes de editar
   piezas.splice(index, 1);
-  lista.deleteRow(index);
-
-  // Guardar cambios
   localStorage.setItem('piezas', JSON.stringify(piezas));
+  renderizar();
 }
 
-// Eliminar pieza
 function eliminar(index) {
   piezas.splice(index, 1);
-  lista.deleteRow(index);
-
-  // Guardar cambios
   localStorage.setItem('piezas', JSON.stringify(piezas));
+  renderizar();
 }
 
-// Borrar todo
-btnBorrarTodo.addEventListener("click", () => {
+document.getElementById('btnAgregar').addEventListener("click", agregar);
+
+document.getElementById('btnBorrarTodo').addEventListener("click", () => {
   if (confirm("¿Estás seguro de que quieres borrar todos los datos?")) {
-    // Limpiar la lista y el localStorage
     piezas.length = 0;
     localStorage.setItem('piezas', JSON.stringify(piezas));
-    lista.innerHTML = "";  // Limpiar la tabla visualmente
+    renderizar();
   }
 });
 
-// Descargar Excel (.xlsx) usando SheetJS
-btnDescargar.addEventListener("click", () => {
+document.getElementById('btnDescargar').addEventListener("click", () => {
   if (piezas.length === 0) {
     alert("No hay piezas para descargar");
     return;
   }
 
-  // Preparar datos con conversiones
-  const ws_data = [["Pieza", "Ancho (mm)", "Ancho (plg)", "Largo (mm)", "Largo (plg)", "Tot.p2"]];
-  piezas.forEach(p => ws_data.push([p.nombre, p.ancho, p.anchoPlg, p.largo, p.largoPlg, p.tot]));
+  const ws_data = [["Pieza", "Ancho (mm)", "Ancho (plg)", "Largo (mm)", "Largo (plg)", "Cantidad", "Tot.p2"]];
+  piezas.forEach(p => ws_data.push([p.nombre, p.ancho, p.anchoPlg, p.largo, p.largoPlg, p.cantidad, p.tot]));
 
-  // Crear hoja y libro
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.aoa_to_sheet(ws_data);
 
-  // Establecer el título "FODEPICO"
-  const title = [["FODEPICO"]];
-  const titleWs = XLSX.utils.aoa_to_sheet(title);
-  XLSX.utils.book_append_sheet(wb, titleWs, "Título");
-
   XLSX.utils.book_append_sheet(wb, ws, "Piezas");
-
-  // Descargar archivo
   XLSX.writeFile(wb, "FODEPICO_Piezas.xlsx");
 });
 
-// Imprimir los datos
-btnImprimir.addEventListener("click", () => {
+document.getElementById('btnImprimir').addEventListener("click", () => {
   if (piezas.length === 0) {
     alert("No hay piezas para imprimir");
     return;
   }
 
-  // Crear tabla para impresión
   let printWindow = window.open('', '', 'height=600,width=800');
   printWindow.document.write('<html><head><title>Piezas Agregadas</title></head><body>');
-  printWindow.document.write('<h1>Piezas Agregadas</h1><table border="1"><tr><th>Pieza</th><th>Ancho (mm)</th><th>Ancho (plg)</th><th>Largo (mm)</th><th>Largo (plg)</th><th>Tot.p2</th></tr>');
+  printWindow.document.write('<h1>Piezas Agregadas</h1><table border="1"><tr><th>Pieza</th><th>Ancho</th><th>Ancho (plg)</th><th>Largo</th><th>Largo (plg)</th><th>Cantidad</th><th>Tot.p2</th></tr>');
+  
   piezas.forEach(pieza => {
-    printWindow.document.write(`<tr><td>${pieza.nombre}</td><td>${pieza.ancho}</td><td>${pieza.anchoPlg}</td><td>${pieza.largo}</td><td>${pieza.largoPlg}</td><td>${pieza.tot}</td></tr>`);
+    printWindow.document.write(`<tr>
+      <td>${pieza.nombre}</td>
+      <td>${pieza.ancho}</td>
+      <td>${pieza.anchoPlg}</td>
+      <td>${pieza.largo}</td>
+      <td>${pieza.largoPlg}</td>
+      <td>${pieza.cantidad}</td>
+      <td>${pieza.tot}</td>
+    </tr>`);
   });
+
   printWindow.document.write('</table></body></html>');
   printWindow.document.close();
   printWindow.print();
 });
 
-// Cargar las piezas almacenadas al cargar la página
-window.onload = function() {
-  if (piezas.length > 0) {
-    piezas.forEach((pieza, index) => {
-      const fila = `<tr>
-                      <td>${pieza.nombre}</td>
-                      <td>${pieza.ancho}</td>
-                      <td>${pieza.anchoPlg}</td>
-                      <td>${pieza.largo}</td>
-                      <td>${pieza.largoPlg}</td>
-                      <td>${pieza.tot}</td>
-                      <td>
-                        <span class="edit-btn" onclick="editar(${index})">Editar</span>
-                        <span class="delete-btn" onclick="eliminar(${index})">Eliminar</span>
-                      </td>
-                    </tr>`;
-      lista.innerHTML += fila;
-    });
-  }
-};
+renderizar();
 </script>
 
 </body>
 </html>
+
