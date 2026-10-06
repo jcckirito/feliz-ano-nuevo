@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Feliz 26 Cumpleaños Treyci!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: background 1s ease-in-out;
+        }
+
+        /* Diseños temáticos dinámicos por página */
+        body.theme-0 {
+            background: linear-gradient(135deg, #ff007f, #7928ca, #4facfe); /* Arcoíris / Neón */
+        }
+        body.theme-1 {
+            background: linear-gradient(135deg, #ff758c, #ff7eb3, #fda085); /* Flores / Rosado */
+        }
+        body.theme-2 {
+            background: linear-gradient(135deg, #13547a, #80d0c7, #1a2a6c); /* Chispas / Azul Mágico */
+        }
+        body.theme-3 {
+            background: linear-gradient(135deg, #f12711, #f5af19, #e65c00); /* Torta / Cálido Festivo */
+        }
+
+        .container {
+            text-align: center;
+            padding: 2.5rem;
+            max-width: 800px;
+            z-index: 2;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border-radius: 30px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            animation: cardEntrance 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        @keyframes cardEntrance {
+            0% { transform: scale(0.8) translateY(30px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        /* Icono flotante superior según la página */
+        .page-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .badge {
+            background: #ffffff;
+            color: #1a2a6c;
+            padding: 6px 22px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(3rem, 7vw, 5.5rem);
+            color: #ffffff;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+
+        /* Marco de la foto con transición */
+        .photo-frame {
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            border: 5px solid #ffffff;
+            box-shadow: 0 0 30px rgba(255,255,255,0.6);
+            overflow: hidden;
+            margin: 0 auto 20px auto;
+        }
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Frase cambiante */
+        .dynamic-phrase {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            font-weight: 600;
+            color: #ffffff;
+            min-height: 50px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 0.5px;
+            padding: 0 10px;
+        }
+
+        /* Indicador de páginas estilo puntos */
+        .pagination-dots {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            transition: all 0.3s ease;
+        }
+        .dot.active {
+            background: #ffffff;
+            transform: scale(1.3);
+            box-shadow: 0 0 10px #ffffff;
+        }
+    </style>
+</head>
+<body class="theme-0" id="mainBody">
+
+    <div class="container" id="cardContainer">
+        <div class="page-icon" id="pageIcon">🌈</div>
+        <div class="badge" id="pageBadge">✨ 8 de Octubre • ¡Felices 26! ✨</div>
+        <h1>¡Feliz Cumpleaños, Treyci!</h1>
+        
+        <div class="photo-frame">
+            <img id="mainPhoto" src="1691838455126.jpg" alt="Treyci">
+        </div>
+
+        <div class="dynamic-phrase" id="dynamicPhrase">Cargando momentos mágicos...</div>
+
+        <div class="pagination-dots" id="dotsContainer">
+            <!-- Puntos dinámicos -->
+        </div>
+    </div>
+
+    <!-- Música de fondo automática -->
+    <audio id="birthdayAudio" autoplay loop>
+        <source src="https://actions.google.com/sounds/v1/ambiences/birthday_party.ogg" type="audio/ogg">
+        <source src="https://cdn.pixabay.com/download/audio/2022/10/14/audio_9939f792cb.mp3?filename=happy-birthday-jazz-version-12075.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Tus fotos junto con sus temas, iconos y frases correspondientes
+        const pagesData = [
+            {
+                photo: "1691838455126.jpg",
+                theme: "theme-0",
+                icon: "🌈",
+                badge: "✨ Arcoíris de Alegría • 26 Años ✨",
+                phrase: "¡Que tu vida se llene de todos los colores del arcoíris, éxito y felicidad infinita!"
+            },
+            {
+                photo: "IMG_20240331_165722.jpg",
+                theme: "theme-1",
+                icon: "🌸",
+                badge: "🌸 Estilo y Primavera 🌸",
+                phrase: "Que florezcan hermosas oportunidades para ti en este nuevo año de vida."
+            },
+            {
+                photo: "IMG-20240307-WA0016.jpg",
+                theme: "theme-2",
+                icon: "✨",
+                badge: "✨ Chispas de Magia ✨",
+                phrase: "Brillas con luz propia en cada paso que das. ¡Disfruta muchísimo tu día!"
+            },
+            {
+                photo: "1691842838401.jpg",
+                theme: "theme-3",
+                icon: "🎂",
+                badge: "🎂 Gran Celebración • 8 de Octubre 🎂",
+                phrase: "¡A celebrar a lo grande tus 26 añitos rodeada de todo el cariño que te mereces!"
+            },
+            {
+                photo: "1691842837759.jpg",
+                theme: "theme-0",
+                icon: "🌟",
+                badge: "🌟 Momentos Inolvidables 🌟",
+                phrase: "Cada recuerdo juntos es un tesoro. ¡Muchas felicidades hoy y siempre!"
+            },
+            {
+                photo: "IMG_20230523_193459.jpg",
+                theme: "theme-1",
+                icon: "🌷",
+                badge: "🌷 Bella Primavera 🌷",
+                phrase: "Que la alegría y la paz inunden tu corazón en este día tan especial."
+            },
+            {
+                photo: "IMG-20240228-WA0000.jpg",
+                theme: "theme-2",
+                icon: "💫",
+                badge: "💫 Éxitos y Metas 💫",
+                phrase: "Que todas tus metas y grandes sueños se sigan haciendo realidad."
+            },
+            {
+                photo: "IMG-20240225-WA0008.jpg",
+                theme: "theme-3",
+                icon: "🎉",
+                badge: "🎉 ¡Feliz Cumpleaños! 🎉",
+                phrase: "¡Pásala increíble! Que tengas un cumpleaños maravilloso de principio a fin."
+            }
+        ];
+
+        let currentPage = 0;
+        const mainBody = document.getElementById("mainBody");
+        const cardContainer = document.getElementById("cardContainer");
+        const pageIcon = document.getElementById("pageIcon");
+        const pageBadge = document.getElementById("pageBadge");
+        const mainPhoto = document.getElementById("mainPhoto");
+        const dynamicPhrase = document.getElementById("dynamicPhrase");
+        const dotsContainer = document.getElementById("dotsContainer");
+
+        // Crear los puntos indicadores
+        pagesData.forEach((_, index) => {
+            const dot = document.createElement("div");
+            dot.classList.add("dot");
+            if (index === 0) dot.classList.add("active");
+            dotsContainer.appendChild(dot);
+        });
+
+        const dots = document.querySelectorAll(".dot");
+
+        function updateSlide() {
+            // Animación de reinicio de tarjeta
+            cardContainer.style.animation = 'none';
+            cardContainer.offsetHeight; // Trigger reflow
+            cardContainer.style.animation = 'cardEntrance 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+
+            const data = pagesData[currentPage];
+
+            // Cambiar diseño y color de fondo
+            mainBody.className = data.theme;
+            pageIcon.textContent = data.icon;
+            pageBadge.textContent = data.badge;
+            mainPhoto.src = data.photo;
+            dynamicPhrase.textContent = data.phrase;
+
+            // Actualizar puntos
+            dots.forEach((dot, idx) => {
+                dot.classList.toggle("active", idx === currentPage);
+            });
+
+            // Avanzar a la siguiente página
+            currentPage = (currentPage + 1) % pagesData.length;
+        }
+
+        // Ejecutar el primer cambio y luego repetirlo cada 5 segundos
+        updateSlide();
+        setInterval(updateSlide, 5000);
+
+        // Permitir que la música suene automáticamente al primer clic si el navegador lo bloquea
+        window.addEventListener('click', () => {
+            const audio = document.getElementById("birthdayAudio");
+            audio.play().catch(e => console.log(e));
+        }, { once: true });
+    </script>
+</body>
+</html>
