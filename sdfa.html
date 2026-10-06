@@ -65,24 +65,6 @@
             display: none;
         }
 
-        @keyframes flipPage {
-            0% {
-                transform: translateX(100%) rotateY(0deg) scaleX(0.8);
-                opacity: 0;
-            }
-            20% {
-                opacity: 1;
-            }
-            50% {
-                transform: translateX(0) rotateY(0deg) scaleX(1);
-                opacity: 1;
-            }
-            100% {
-                transform: translateX(-100%) rotateY(0deg) scaleX(0.8);
-                opacity: 0;
-            }
-        }
-
         .container {
             text-align: center;
             padding: 2.5rem;
@@ -371,8 +353,8 @@
         </div>
     </div>
 
-    <audio id="birthdayAudio" autoplay loop>
-        <source src="https://www.youtube.com/watch?v=sMNv7C_zKl0" type="audio/mpeg">
+    <audio id="birthdayAudio" autoplay loop preload="auto">
+        <source src="https://cdn.pixabay.com/download/audio/2022/02/15/audio_d1584910db.mp3?filename=happy-birthday-31732.mp3" type="audio/mpeg">
     </audio>
 
     <script>
@@ -470,12 +452,6 @@
             }
         }
 
-        function createPageFlip() {
-            const flip = document.createElement("div");
-            flip.classList.add("page-flip");
-            return flip;
-        }
-
         let currentPage = 0;
         const mainBody = document.getElementById("mainBody");
         const cardContainer = document.getElementById("cardContainer");
@@ -525,16 +501,20 @@
             updateSlide();
         }
 
+        function playAudioOnce() {
+            const audio = document.getElementById("birthdayAudio");
+            if (!audio) return;
+            audio.volume = 0.7;
+            audio.play().catch(() => {});
+        }
+
         createParticles();
         updateSlide();
         setInterval(updateSlide, 5000);
 
-        window.addEventListener('click', () => {
-            const audio = document.getElementById("birthdayAudio");
-            if (audio) {
-                audio.play().catch(() => {});
-            }
-        }, { once: true });
+        ['click', 'touchstart', 'pointerdown'].forEach((eventName) => {
+            window.addEventListener(eventName, playAudioOnce, { once: true });
+        });
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight') {
