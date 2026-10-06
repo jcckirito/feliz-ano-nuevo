@@ -62,15 +62,7 @@
         }
 
         .page-flip {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 50%, #ffffff 100%);
-            z-index: 10;
-            border-radius: 25px;
-            opacity: 0;
-            animation: flipPage 0.9s ease-in-out forwards;
-            pointer-events: none;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+            display: none;
         }
 
         @keyframes flipPage {
@@ -380,8 +372,7 @@
     </div>
 
     <audio id="birthdayAudio" autoplay loop>
-        <source src="https://cdn.pixabay.com/download/audio/2022/02/15/audio_d1584910db.mp3" type="audio/mpeg">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        <source src="https://www.youtube.com/watch?v=sMNv7C_zKl0" type="audio/mpeg">
     </audio>
 
     <script>
@@ -505,35 +496,28 @@
         const dots = document.querySelectorAll(".dot");
 
         function updateSlide() {
-            const flip = createPageFlip();
-            cardContainer.appendChild(flip);
+            const data = pagesData[currentPage];
+            mainBody.className = data.theme;
+            pageIcon.textContent = data.icon;
+            pageBadge.textContent = data.badge;
+            dynamicPhrase.textContent = data.phrase;
 
-            setTimeout(() => {
-                const data = pagesData[currentPage];
-                mainBody.className = data.theme;
-                pageIcon.textContent = data.icon;
-                pageBadge.textContent = data.badge;
-                dynamicPhrase.textContent = data.phrase;
+            const imageUrl = resolveAssetUrl(data.photo);
+            mainPhoto.src = imageUrl;
+            mainPhoto.alt = "Treyci";
+            mainPhoto.onerror = () => {
+                mainPhoto.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23e7e7e7'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' font-size='18' fill='%23999'%3EImagen no disponible%3C/text%3E%3C/svg%3E";
+            };
 
-                const imageUrl = resolveAssetUrl(data.photo);
-                mainPhoto.src = imageUrl;
-                mainPhoto.alt = "Treyci";
-                mainPhoto.onerror = () => {
-                    mainPhoto.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23e7e7e7'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='24' fill='%23999'%3EImagen no disponible%3C/text%3E%3C/svg%3E";
-                };
+            dots.forEach((dot, idx) => {
+                dot.classList.toggle("active", idx === currentPage);
+            });
 
-                dots.forEach((dot, idx) => {
-                    dot.classList.toggle("active", idx === currentPage);
-                });
+            if (currentPage % 3 === 0) {
+                createConfetti();
+            }
 
-                flip.remove();
-
-                if (currentPage % 3 === 0) {
-                    createConfetti();
-                }
-
-                currentPage = (currentPage + 1) % pagesData.length;
-            }, 900);
+            currentPage = (currentPage + 1) % pagesData.length;
         }
 
         function goToPage(index) {
