@@ -61,77 +61,6 @@
             50% { transform: translateY(-30px) translateX(20px); opacity: 1; }
         }
 
-        .girl-container {
-            position: absolute;
-            bottom: 40px;
-            right: 60px;
-            z-index: 4;
-            animation: girlAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        @keyframes girlAppear {
-            from {
-                transform: translateX(150px) translateY(100px) scale(0.3);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0) translateY(0) scale(1);
-                opacity: 1;
-            }
-        }
-
-        .girl-image {
-            width: 200px;
-            height: auto;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
-            animation: girlWave 1.2s ease-in-out infinite;
-            transform-origin: bottom center;
-        }
-
-        @keyframes girlWave {
-            0%, 100% { transform: translateY(0) rotateZ(0deg); }
-            25% { transform: translateY(-15px) rotateZ(-5deg); }
-            50% { transform: translateY(-5px) rotateZ(0deg); }
-            75% { transform: translateY(-12px) rotateZ(-4deg); }
-        }
-
-        .hurra-bubble {
-            position: absolute;
-            top: -40px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, #fff700, #ffed4e);
-            border-radius: 50%;
-            width: 70px;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 24px;
-            color: #ff6b35;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            border: 3px solid #fff;
-            animation: hurraBounce 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
-            opacity: 0;
-            animation: hurraBounce 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) infinite, hurraShow 2s ease forwards;
-        }
-
-        @keyframes hurraShow {
-            0% { opacity: 0; }
-            20% { opacity: 1; }
-            80% { opacity: 1; }
-            100% { opacity: 0; }
-        }
-
-        @keyframes hurraBounce {
-            0%, 100% { transform: translateX(-50%) translateY(0) scale(1); }
-            50% { transform: translateX(-50%) translateY(-15px) scale(1.1); }
-        }
-
         .page-flip {
             position: absolute;
             inset: 0;
@@ -374,6 +303,28 @@
         .corner-bl { bottom: 10px; left: 10px; animation-delay: 2s; }
         .corner-br { bottom: 10px; right: 10px; animation-delay: 3s; }
 
+        .music-indicator {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: #ffffff;
+            font-size: 12px;
+            opacity: 0.7;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .music-icon {
+            font-size: 18px;
+            animation: musicPulse 0.6s ease-in-out infinite;
+        }
+
+        @keyframes musicPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
         @media (max-width: 768px) {
             .container {
                 margin: 20px;
@@ -394,20 +345,8 @@
                 font-size: 3rem;
             }
 
-            .girl-container {
-                width: 140px;
-                right: 20px;
-                bottom: 20px;
-            }
-
-            .girl-image {
-                width: 140px;
-            }
-
-            .hurra-bubble {
-                width: 50px;
-                height: 50px;
-                font-size: 18px;
+            .music-indicator {
+                font-size: 10px;
             }
         }
     </style>
@@ -433,11 +372,16 @@
         <div class="dynamic-phrase" id="dynamicPhrase">Cargando momentos mágicos...</div>
 
         <div class="pagination-dots" id="dotsContainer"></div>
+
+        <div class="music-indicator">
+            <span class="music-icon">🎵</span>
+            <span id="songName">Canción de Cumpleaños</span>
+        </div>
     </div>
 
     <audio id="birthdayAudio" autoplay loop>
-        <source src="https://actions.google.com/sounds/v1/ambiences/birthday_party.ogg" type="audio/ogg">
-        <source src="https://cdn.pixabay.com/download/audio/2022/10/14/audio_9939f792cb.mp3?filename=happy-birthday-jazz-version-12075.mp3" type="audio/mpeg">
+        <source src="https://cdn.pixabay.com/download/audio/2022/02/15/audio_d1584910db.mp3" type="audio/mpeg">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     </audio>
 
     <script>
@@ -535,16 +479,6 @@
             }
         }
 
-        function createGirlWithHurra() {
-            const container = document.createElement("div");
-            container.classList.add("girl-container");
-            container.innerHTML = `
-                <div class="hurra-bubble">¡Hurra!</div>
-                <img class="girl-image" src="https://cdn-icons-png.freepik.com/512/8847/8847755.png" alt="¡Felicidades!" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22%3E%3Crect fill=%22%23e7e7e7%22 width=%22200%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 fill=%22%23999%22 font-size=%2216%22%3E¡Felicidades!%3C/text%3E%3C/svg%3E'">
-            `;
-            return container;
-        }
-
         function createPageFlip() {
             const flip = document.createElement("div");
             flip.classList.add("page-flip");
@@ -571,15 +505,9 @@
         const dots = document.querySelectorAll(".dot");
 
         function updateSlide() {
-            // Crear la chica saludando con "¡Hurra!"
-            const girl = createGirlWithHurra();
-            cardContainer.appendChild(girl);
-
-            // Crear el efecto de cambio de página
             const flip = createPageFlip();
             cardContainer.appendChild(flip);
 
-            // Esperar a que termine la animación del flip (1 segundo)
             setTimeout(() => {
                 const data = pagesData[currentPage];
                 mainBody.className = data.theme;
@@ -598,17 +526,14 @@
                     dot.classList.toggle("active", idx === currentPage);
                 });
 
-                // Remover la chica y el flip después de la animación
-                girl.remove();
                 flip.remove();
 
-                // Pequeño confetti effect cada 3 slides
                 if (currentPage % 3 === 0) {
                     createConfetti();
                 }
 
                 currentPage = (currentPage + 1) % pagesData.length;
-            }, 1000);
+            }, 900);
         }
 
         function goToPage(index) {
