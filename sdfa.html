@@ -23,18 +23,17 @@
             transition: background 1s ease-in-out;
         }
 
-        /* Diseños temáticos dinámicos por página */
         body.theme-0 {
-            background: linear-gradient(135deg, #ff007f, #7928ca, #4facfe); /* Arcoíris / Neón */
+            background: linear-gradient(135deg, #ff007f, #7928ca, #4facfe);
         }
         body.theme-1 {
-            background: linear-gradient(135deg, #ff758c, #ff7eb3, #fda085); /* Flores / Rosado */
+            background: linear-gradient(135deg, #ff758c, #ff7eb3, #fda085);
         }
         body.theme-2 {
-            background: linear-gradient(135deg, #13547a, #80d0c7, #1a2a6c); /* Chispas / Azul Mágico */
+            background: linear-gradient(135deg, #13547a, #80d0c7, #1a2a6c);
         }
         body.theme-3 {
-            background: linear-gradient(135deg, #f12711, #f5af19, #e65c00); /* Torta / Cálido Festivo */
+            background: linear-gradient(135deg, #f12711, #f5af19, #e65c00);
         }
 
         .container {
@@ -57,7 +56,6 @@
             100% { transform: scale(1) translateY(0); opacity: 1; }
         }
 
-        /* Icono flotante superior según la página */
         .page-icon {
             font-size: 3rem;
             margin-bottom: 10px;
@@ -91,7 +89,6 @@
             line-height: 1.1;
         }
 
-        /* Marco de la foto con transición */
         .photo-frame {
             width: 240px;
             height: 240px;
@@ -100,15 +97,16 @@
             box-shadow: 0 0 30px rgba(255,255,255,0.6);
             overflow: hidden;
             margin: 0 auto 20px auto;
+            background: rgba(255,255,255,0.2);
         }
         .photo-frame img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            display: block;
             transition: opacity 0.5s ease;
         }
 
-        /* Frase cambiante */
         .dynamic-phrase {
             font-size: clamp(1.1rem, 2.5vw, 1.4rem);
             font-weight: 600;
@@ -119,7 +117,6 @@
             padding: 0 10px;
         }
 
-        /* Indicador de páginas estilo puntos */
         .pagination-dots {
             margin-top: 20px;
             display: flex;
@@ -146,26 +143,22 @@
         <div class="page-icon" id="pageIcon">🌈</div>
         <div class="badge" id="pageBadge">✨ 8 de Octubre • ¡Felices 26! ✨</div>
         <h1>¡Feliz Cumpleaños, Treyci!</h1>
-        
+
         <div class="photo-frame">
-            <img id="mainPhoto" src="1691838455126.jpg" alt="Treyci">
+            <img id="mainPhoto" src="" alt="Treyci">
         </div>
 
         <div class="dynamic-phrase" id="dynamicPhrase">Cargando momentos mágicos...</div>
 
-        <div class="pagination-dots" id="dotsContainer">
-            <!-- Puntos dinámicos -->
-        </div>
+        <div class="pagination-dots" id="dotsContainer"></div>
     </div>
 
-    <!-- Música de fondo automática -->
     <audio id="birthdayAudio" autoplay loop>
         <source src="https://actions.google.com/sounds/v1/ambiences/birthday_party.ogg" type="audio/ogg">
         <source src="https://cdn.pixabay.com/download/audio/2022/10/14/audio_9939f792cb.mp3?filename=happy-birthday-jazz-version-12075.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        // Tus fotos junto con sus temas, iconos y frases correspondientes
         const pagesData = [
             {
                 photo: "1691838455126.jpg",
@@ -225,6 +218,14 @@
             }
         ];
 
+        const GITHUB_RAW_BASE = "https://raw.githubusercontent.com/jcckirito/feliz-ano-nuevo/main/";
+
+        function resolveAssetUrl(filename) {
+            if (!filename) return "";
+            if (/^https?:\/\//i.test(filename)) return filename;
+            return `${GITHUB_RAW_BASE}${filename}`;
+        }
+
         let currentPage = 0;
         const mainBody = document.getElementById("mainBody");
         const cardContainer = document.getElementById("cardContainer");
@@ -234,7 +235,6 @@
         const dynamicPhrase = document.getElementById("dynamicPhrase");
         const dotsContainer = document.getElementById("dotsContainer");
 
-        // Crear los puntos indicadores
         pagesData.forEach((_, index) => {
             const dot = document.createElement("div");
             dot.classList.add("dot");
@@ -245,37 +245,38 @@
         const dots = document.querySelectorAll(".dot");
 
         function updateSlide() {
-            // Animación de reinicio de tarjeta
             cardContainer.style.animation = 'none';
-            cardContainer.offsetHeight; // Trigger reflow
+            cardContainer.offsetHeight;
             cardContainer.style.animation = 'cardEntrance 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
 
             const data = pagesData[currentPage];
-
-            // Cambiar diseño y color de fondo
             mainBody.className = data.theme;
             pageIcon.textContent = data.icon;
             pageBadge.textContent = data.badge;
-            mainPhoto.src = data.photo;
             dynamicPhrase.textContent = data.phrase;
 
-            // Actualizar puntos
+            const imageUrl = resolveAssetUrl(data.photo);
+            mainPhoto.src = imageUrl;
+            mainPhoto.alt = "Treyci";
+            mainPhoto.onerror = () => {
+                mainPhoto.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23e7e7e7'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='30' fill='%23555'%3EImagen%3C/text%3E%3C/svg%3E";
+            };
+
             dots.forEach((dot, idx) => {
                 dot.classList.toggle("active", idx === currentPage);
             });
 
-            // Avanzar a la siguiente página
             currentPage = (currentPage + 1) % pagesData.length;
         }
 
-        // Ejecutar el primer cambio y luego repetirlo cada 5 segundos
         updateSlide();
         setInterval(updateSlide, 5000);
 
-        // Permitir que la música suene automáticamente al primer clic si el navegador lo bloquea
         window.addEventListener('click', () => {
             const audio = document.getElementById("birthdayAudio");
-            audio.play().catch(e => console.log(e));
+            if (audio) {
+                audio.play().catch(() => {});
+            }
         }, { once: true });
     </script>
 </body>
