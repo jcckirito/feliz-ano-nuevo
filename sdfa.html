@@ -11,6 +11,7 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: 'Montserrat', sans-serif;
             min-height: 100vh;
@@ -36,6 +37,31 @@
             background: linear-gradient(135deg, #f12711, #f5af19, #e65c00);
         }
 
+        /* Partículas de fondo animadas */
+        .particles-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            animation: float 6s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.5; }
+            50% { transform: translateY(-30px) translateX(20px); opacity: 1; }
+        }
+
         .container {
             text-align: center;
             padding: 2.5rem;
@@ -45,10 +71,27 @@
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(15px);
             border-radius: 30px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 255, 255, 0.2);
             animation: cardEntrance 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
 
         @keyframes cardEntrance {
@@ -57,89 +100,219 @@
         }
 
         .page-icon {
-            font-size: 3rem;
-            margin-bottom: 10px;
-            animation: bounce 2s infinite;
+            font-size: 4rem;
+            margin-bottom: 15px;
+            animation: bounce 2s infinite, rotate 3s infinite linear;
+            display: inline-block;
         }
+
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotateZ(0deg); }
+            100% { transform: rotateZ(360deg); }
         }
 
         .badge {
-            background: #ffffff;
+            background: linear-gradient(135deg, #ffffff, #f0f0f0);
             color: #1a2a6c;
-            padding: 6px 22px;
+            padding: 8px 28px;
             border-radius: 30px;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.95rem;
             text-transform: uppercase;
             letter-spacing: 2px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2), inset 0 -2px 5px rgba(0,0,0,0.1);
             display: inline-block;
             margin-bottom: 15px;
+            animation: badgePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(0,0,0,0.2), inset 0 -2px 5px rgba(0,0,0,0.1); }
+            50% { transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,0.3), inset 0 -2px 5px rgba(0,0,0,0.1); }
         }
 
         h1 {
             font-family: 'Great Vibes', cursive;
             font-size: clamp(3rem, 7vw, 5.5rem);
             color: #ffffff;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.4);
-            margin-bottom: 20px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.4), 0 0 20px rgba(255,255,255,0.3);
+            margin-bottom: 25px;
             line-height: 1.1;
+            animation: titleGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { text-shadow: 0 4px 10px rgba(0,0,0,0.4), 0 0 20px rgba(255,255,255,0.3); }
+            50% { text-shadow: 0 4px 10px rgba(0,0,0,0.4), 0 0 40px rgba(255,255,255,0.5); }
         }
 
         .photo-frame {
-            width: 240px;
-            height: 240px;
+            width: 260px;
+            height: 260px;
             border-radius: 50%;
-            border: 5px solid #ffffff;
-            box-shadow: 0 0 30px rgba(255,255,255,0.6);
+            border: 6px solid #ffffff;
+            box-shadow: 0 0 40px rgba(255,255,255,0.8), inset 0 0 20px rgba(0,0,0,0.2);
             overflow: hidden;
-            margin: 0 auto 20px auto;
+            margin: 0 auto 30px auto;
             background: rgba(255,255,255,0.2);
+            position: relative;
+            animation: photoFloat 3s ease-in-out infinite;
         }
+
+        @keyframes photoFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.02); }
+        }
+
+        .photo-frame::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shimmer 3s infinite;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
         .photo-frame img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .photo-frame:hover img {
+            transform: scale(1.05);
         }
 
         .dynamic-phrase {
             font-size: clamp(1.1rem, 2.5vw, 1.4rem);
             font-weight: 600;
             color: #ffffff;
-            min-height: 50px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            min-height: 60px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5), 0 0 10px rgba(255,255,255,0.2);
             letter-spacing: 0.5px;
             padding: 0 10px;
+            animation: phraseSlide 0.6s ease-in-out;
+            line-height: 1.5;
+        }
+
+        @keyframes phraseSlide {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
         .pagination-dots {
-            margin-top: 20px;
+            margin-top: 30px;
             display: flex;
             justify-content: center;
-            gap: 8px;
+            gap: 12px;
         }
+
         .dot {
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.4);
-            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            border: 2px solid rgba(255,255,255,0.5);
         }
+
         .dot.active {
             background: #ffffff;
-            transform: scale(1.3);
-            box-shadow: 0 0 10px #ffffff;
+            transform: scale(1.4);
+            box-shadow: 0 0 15px #ffffff, 0 0 30px rgba(255,255,255,0.6);
+            border-color: rgba(255,255,255,0.8);
+        }
+
+        .dot:hover {
+            background: rgba(255,255,255,0.7);
+            transform: scale(1.2);
+        }
+
+        /* Confetti effect */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #ffcc00;
+            pointer-events: none;
+            z-index: 1;
+            animation: confettiFall 3s ease-in forwards;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotateZ(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Decoración de esquinas */
+        .corner-decoration {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.3;
+            animation: float 4s infinite ease-in-out;
+        }
+
+        .corner-tl { top: 10px; left: 10px; animation-delay: 0s; }
+        .corner-tr { top: 10px; right: 10px; animation-delay: 1s; }
+        .corner-bl { bottom: 10px; left: 10px; animation-delay: 2s; }
+        .corner-br { bottom: 10px; right: 10px; animation-delay: 3s; }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px;
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+                margin-bottom: 15px;
+            }
+
+            .photo-frame {
+                width: 200px;
+                height: 200px;
+            }
+
+            .page-icon {
+                font-size: 3rem;
+            }
+        }
+
+        /* Glow effect */
+        .glow-text {
+            text-shadow: 0 0 10px rgba(255,255,255,0.5), 0 0 20px rgba(255,255,255,0.3);
         }
     </style>
 </head>
 <body class="theme-0" id="mainBody">
 
+    <div class="particles-bg" id="particlesBg"></div>
+
     <div class="container" id="cardContainer">
+        <div class="corner-decoration corner-tl">🎉</div>
+        <div class="corner-decoration corner-tr">✨</div>
+        <div class="corner-decoration corner-bl">🎂</div>
+        <div class="corner-decoration corner-br">🌟</div>
+
         <div class="page-icon" id="pageIcon">🌈</div>
         <div class="badge" id="pageBadge">✨ 8 de Octubre • ¡Felices 26! ✨</div>
         <h1>¡Feliz Cumpleaños, Treyci!</h1>
@@ -226,6 +399,34 @@
             return `${GITHUB_RAW_BASE}${filename}`;
         }
 
+        function createParticles() {
+            const particlesBg = document.getElementById("particlesBg");
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement("div");
+                particle.classList.add("particle");
+                particle.style.left = Math.random() * 100 + "%";
+                particle.style.top = Math.random() * 100 + "%";
+                particle.style.animationDelay = Math.random() * 2 + "s";
+                particle.style.animationDuration = (Math.random() * 4 + 6) + "s";
+                particlesBg.appendChild(particle);
+            }
+        }
+
+        function createConfetti() {
+            const colors = ['#ffcc00', '#ff6b9d', '#4facfe', '#00f2fe', '#ffd700'];
+            for (let i = 0; i < 30; i++) {
+                const confetti = document.createElement("div");
+                confetti.classList.add("confetti");
+                confetti.style.left = Math.random() * 100 + "vw";
+                confetti.style.top = "-10px";
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.delay = Math.random() * 0.5 + "s";
+                confetti.style.animationDuration = (Math.random() * 2 + 2.5) + "s";
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 3500);
+            }
+        }
+
         let currentPage = 0;
         const mainBody = document.getElementById("mainBody");
         const cardContainer = document.getElementById("cardContainer");
@@ -239,12 +440,14 @@
             const dot = document.createElement("div");
             dot.classList.add("dot");
             if (index === 0) dot.classList.add("active");
+            dot.addEventListener("click", () => goToPage(index));
             dotsContainer.appendChild(dot);
         });
 
         const dots = document.querySelectorAll(".dot");
 
         function updateSlide() {
+            // Animación de salida
             cardContainer.style.animation = 'none';
             cardContainer.offsetHeight;
             cardContainer.style.animation = 'cardEntrance 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
@@ -259,25 +462,48 @@
             mainPhoto.src = imageUrl;
             mainPhoto.alt = "Treyci";
             mainPhoto.onerror = () => {
-                mainPhoto.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23e7e7e7'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='30' fill='%23555'%3EImagen%3C/text%3E%3C/svg%3E";
+                mainPhoto.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23e7e7e7'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='%23999' text-anchor='middle' dominant-baseline='middle'%3EImagen no disponible%3C/text%3E%3C/svg%3E";
             };
 
             dots.forEach((dot, idx) => {
                 dot.classList.toggle("active", idx === currentPage);
             });
 
+            // Pequeño confetti effect cada 3 slides
+            if (currentPage % 3 === 0) {
+                createConfetti();
+            }
+
             currentPage = (currentPage + 1) % pagesData.length;
         }
 
+        function goToPage(index) {
+            currentPage = index;
+            updateSlide();
+        }
+
+        // Inicializar
+        createParticles();
         updateSlide();
         setInterval(updateSlide, 5000);
 
+        // Play audio on first interaction
         window.addEventListener('click', () => {
             const audio = document.getElementById("birthdayAudio");
             if (audio) {
                 audio.play().catch(() => {});
             }
         }, { once: true });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                updateSlide();
+            } else if (e.key === 'ArrowLeft') {
+                currentPage = (currentPage - 2 + pagesData.length) % pagesData.length;
+                updateSlide();
+            }
+        });
     </script>
 </body>
 </html>
